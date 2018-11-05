@@ -51,9 +51,17 @@ public class SelectSample1 extends HttpServlet {
             //create Statement
             //execute sql SELECT * FROM Login
             //output their ids
+            Statement stmt=conn.createStatement();
+//            String id = request.getParameter("id");
+//            String password = request.getParameter("password");
+            ResultSet rs= stmt.executeQuery("select * from login");
             
-            
-            
+//            ResultSet rs = stmt.executeQuery("select * from login where id = '"+id+"'and password='"+password+"'");
+            while (rs.next()){
+                String id = rs.getString("id");
+                String password = rs.getString("password");
+                out.println(id+":"+password+"<br/>");
+            }
             //////////////////////////////////
         } catch (SQLException ex) {
             Logger.getLogger(SelectSample1.class.getName()).log(Level.SEVERE, null, ex);

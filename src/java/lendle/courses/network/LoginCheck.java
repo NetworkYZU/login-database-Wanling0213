@@ -7,6 +7,13 @@ package lendle.courses.network;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,11 +39,19 @@ public class LoginCheck extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter();
+            Connection conn=DriverManager.getConnection("jdbc:derby://localhost:1527/sample", "app", "app")) {
             /* TODO output your page here. You may use following sample code. */
-            String id=request.getParameter("id");
-            String password=request.getParameter("password");
-            
+            Statement stmt=conn.createStatement();
+            String id = request.getParameter("id");
+            String password = request.getParameter("password");
+            ResultSet rs = stmt.executeQuery("select * from login where id = '"+id+"'and password='"+password+"'");
+      
+            if (rs.next()){
+                out.println("login success!");
+            }else{
+                out.println("login failes!");
+            }
             boolean correct=false;
             //加入適當的程序，確認輸入的帳號密碼是否在資料庫裡面
             
@@ -46,6 +61,8 @@ public class LoginCheck extends HttpServlet {
             }else{
                 request.getRequestDispatcher("/WEB-INF/LoginFail.jsp").forward(request, response);
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

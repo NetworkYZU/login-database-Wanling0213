@@ -46,7 +46,9 @@ public class LoginAdd extends HttpServlet {
         try (Connection conn=DriverManager.getConnection("jdbc:derby://localhost:1527/sample", "app", "app")) {
             Statement stmt=conn.createStatement();
             //執行 insert
-            
+            String id = request.getParameter("id");
+            String password = request.getParameter("password");
+            stmt.executeLargeUpdate("insert into login(id,password) values ('"+id+"','"+password+"')");
             //////////////
         } catch (SQLException ex) {
             Logger.getLogger(SelectSample1.class.getName()).log(Level.SEVERE, null, ex);
